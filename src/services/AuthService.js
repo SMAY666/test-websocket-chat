@@ -3,7 +3,7 @@ import {ERRORS} from '../constants/errors.js';
 import {Password} from '../utils/Password.js';
 import {server} from '../index.js';
 
-class AuthRepository {
+class AuthService {
     async signUp(data) {
         const candidate = await UserModel.findOne({
             where: {
@@ -47,4 +47,4 @@ class AuthRepository {
     }
 }
 
-export const authRepository = new AuthRepository();
+export const authService = new AuthService();
