@@ -2,6 +2,7 @@
   "name": "test-task-websocket-chat",
   "version": "0.1.0",
   "main": "dist/index.js",
+  "type": "module",
   "scripts": {
     "start": "node src/index"
   },
@@ -11,6 +12,12 @@
   },
   "license": "GPL-3.0-or-later",
   "devDependencies": {
+    "dotenv": "^16.3.1",
     "eslint-config-bondarenko-style": "^1.1.1"
+  },
+  "dependencies": {
+    "fastify": "^4.23.0",
+    "mysql2": "^3.6.1",
+    "sequelize": "^6.33.0"
   }
 }
