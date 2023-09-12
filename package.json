@@ -16,6 +16,9 @@
     "eslint-config-bondarenko-style": "^1.1.1"
   },
   "dependencies": {
+    "@fastify/auth": "^4.3.0",
+    "@fastify/jwt": "^7.2.1",
+    "bcrypt": "^5.1.1",
     "fastify": "^4.23.0",
     "mysql2": "^3.6.1",
     "sequelize": "^6.33.0"
