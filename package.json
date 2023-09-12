@@ -1,0 +1,16 @@
+{
+  "name": "test-task-websocket-chat",
+  "version": "0.1.0",
+  "main": "dist/index.js",
+  "scripts": {
+    "start": "node src/index"
+  },
+  "author": {
+    "name": "Sazonov Matvey",
+    "email": "matvey150603@gmail.com"
+  },
+  "license": "GPL-3.0-or-later",
+  "devDependencies": {
+    "eslint-config-bondarenko-style": "^1.1.1"
+  }
+}

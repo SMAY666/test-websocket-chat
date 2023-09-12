@@ -1,0 +1,18 @@
+# Development
+/.idea
+/.vscode
+
+# Dependencies
+/**/node_modules
+
+# Product
+/**/dist
+
+# Enviroment
+/.env
+
+# Storage
+/**/public/files
+
+# MacOS
+/**/.DS_Store
