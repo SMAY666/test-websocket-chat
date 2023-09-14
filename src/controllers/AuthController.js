@@ -1,18 +1,18 @@
 import {authService} from '../services/AuthService.js';
 
 class AuthController {
-    async signUp(req, reply)  {
-        const user = await authService.signUp(req.body);
-        return reply
-            .code(201)
-            .send(user);
+    async signUp(request, response)  {
+        const user = await authService.signUp(request.body);
+        return response
+            .status(201)
+            .json(user);
     }
 
-    async signIn(req, reply)  {
-        const token = await authService.signIn(req.body);
-        return reply
-            .code(200)
-            .send(token);
+    async signIn(request, response)  {
+        const token = await authService.signIn(request.body);
+        return response
+            .status(200)
+            .json(token);
     }
 }
 

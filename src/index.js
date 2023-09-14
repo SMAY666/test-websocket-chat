@@ -1,12 +1,16 @@
 import Express from 'express';
+import {expressjwt} from 'express-jwt'
 import {Server} from 'socket.io'
-import {sequelize} from './utils/db.js';
 import {createServer} from 'node:http';
-
+import {sequelize} from './utils/db.js';
+import {apiRouter} from './routes/index.js';
 
 export const server = await Express();
 const httpServer= createServer(server);
 const socketServer = new Server(httpServer)
+
+server.use('/chat', expressjwt({secret: process.env.JWT_SECRET, algorithms: ['sha256']}))
+server.use('/api', apiRouter);
 
 await sequelize.sync({alter: true, force: false});
 
@@ -23,5 +27,9 @@ socketServer.on('connection', (socket) => {
 
 
 httpServer.listen(3000, () => {
-    console.log('Server started on http://localhost:3000');
+    console.log('Socket server started on http://localhost:3000');
 });
+
+server.listen(8001, () => {
+    console.log(`Server started on port: 8001`);
+})
