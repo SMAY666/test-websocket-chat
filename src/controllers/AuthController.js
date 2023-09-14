@@ -1,14 +1,16 @@
 import {authService} from '../services/AuthService.js';
+import {CustomError} from '../utils/errors.js';
 
 class AuthController {
-    async signUp(request, response)  {
-        const user = await authService.signUp(request.body);
+    async signUp(request, response) {
+        const result = await authService.signUp(request.body);
         return response
-            .status(201)
-            .json(user);
+            .status(result.status)
+            .json(result.data);
+
     }
 
-    async signIn(request, response)  {
+    async signIn(request, response) {
         const token = await authService.signIn(request.body);
         return response
             .status(200)

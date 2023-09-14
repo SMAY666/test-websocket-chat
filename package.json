@@ -23,6 +23,7 @@
     "express-jwt": "^8.4.1",
     "fastify": "^4.23.0",
     "fastify-socket.io": "^4.0.0",
+    "jsonwebtoken": "^9.0.2",
     "mysql2": "^3.6.1",
     "sequelize": "^6.33.0",
     "socket.io": "^4.7.2"

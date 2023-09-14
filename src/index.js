@@ -5,12 +5,13 @@ import {createServer} from 'node:http';
 import {sequelize} from './utils/db.js';
 import {apiRouter} from './routes/index.js';
 
-export const server = await Express();
+export const server =  Express()
+    .use(Express.json())
+    .use(Express.urlencoded({extended: true}))
+    .use('/api', apiRouter);
+
 const httpServer= createServer(server);
 const socketServer = new Server(httpServer)
-
-server.use('/chat', expressjwt({secret: process.env.JWT_SECRET, algorithms: ['sha256']}))
-server.use('/api', apiRouter);
 
 await sequelize.sync({alter: true, force: false});
 
