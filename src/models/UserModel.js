@@ -1,6 +1,6 @@
 import {DataTypes} from 'sequelize';
 import {sequelize} from '../utils/db.js';
-import {password_length} from '../constants/modals.js'
+
 
 export const UserModel = sequelize.define('users', {
     id: {
@@ -17,4 +17,4 @@ export const UserModel = sequelize.define('users', {
     passwordHash: {
         type: DataTypes.STRING,
     },
-})
+});

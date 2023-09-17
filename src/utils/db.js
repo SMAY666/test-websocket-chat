@@ -1,5 +1,5 @@
 import {Sequelize} from 'sequelize';
-import 'dotenv/config.js'
+import 'dotenv/config.js';
 
 export const sequelize = new Sequelize(
     process.env.DB_NAME,
@@ -7,8 +7,8 @@ export const sequelize = new Sequelize(
     process.env.DB_PASSWORD,
     {
         define: {
-            charset: "utf8",
-            collate: 'utf8_general_ci'
+            charset: 'utf8',
+            collate: 'utf8_general_ci',
         },
         host: 'localhost',
         dialect: 'mysql',

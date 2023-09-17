@@ -1,9 +1,9 @@
-import bcrypt from 'bcrypt'
+import bcrypt from 'bcrypt';
 
 
 export class Password {
     static _hashing(password) {
-        return bcrypt.hashSync(password, process.env.PASSWORD_SALT)
+        return bcrypt.hashSync(password, process.env.PASSWORD_SALT);
     }
 
     static calculateHash(password) {

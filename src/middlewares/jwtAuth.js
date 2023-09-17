@@ -18,6 +18,6 @@ export function verifyJwt(req, reply, done) {
 
         done();
     } catch (error) {
-        void reply.status(401).send({message: 'Not authorized'})
+        void reply.status(401).send({message: 'Not authorized'});
     }
 }

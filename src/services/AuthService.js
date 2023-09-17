@@ -24,7 +24,7 @@ class AuthService {
             message: await UserModel.create({
                 ...data,
                 passwordHash: Password.calculateHash(data.password),
-            })
+            }),
         };
     }
 
@@ -43,13 +43,13 @@ class AuthService {
                 return ERRORS.USERS.INVALID_PASSWORD;
             }
             return jwt.sign({
-                    userId: candidate.id,
-                    liveTime: 86400000 // 24 hour
-                }, process.env.JWT_SECRET, {
-                    expiresIn: '1d',
-                })
+                userId: candidate.id,
+                liveTime: 86400000, // 24 hour
+            }, process.env.JWT_SECRET, {
+                expiresIn: '1d',
+            });
         } catch (error) {
-            throw new Error(error.message)
+            throw new Error(error.message);
         }
     }
 }
