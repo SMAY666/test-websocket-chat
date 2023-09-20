@@ -22,20 +22,21 @@
     <input id="input" autocomplete="off" /><button>Send</button>
 </form>
 <script src="/socket.io/socket.io.js"></script>
-<script>
+<script type="module">
     const socket = io();
 
     const form = document.getElementById('form');
     const message = document.getElementById('input');
+    const messagesList = document.getElementById('messages');
 
     form.addEventListener('submit', (event) => {
         event.preventDefault();
         if (message.value) {
-            socket.emit('chat message', message.value);
+            socket.emit('sendMsg', message.value);
             message.value = '';
         }
     });
 </script>
-<script src="script.js"></script>
+<script type="module" src="./script.js"></script>
 </body>
 </html>

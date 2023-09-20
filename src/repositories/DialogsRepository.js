@@ -14,7 +14,7 @@ class DialogsRepository {
     async getAll() {
         try {
             const messages = await DialogModel.findAll({
-                order: [['id', 'DESC']],
+                order: [['id', 'ASC']],
             });
             return {
                 status: 200,
