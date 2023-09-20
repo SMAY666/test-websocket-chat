@@ -5,6 +5,7 @@ import {createServer} from 'node:http';
 import {sequelize} from './utils/db.js';
 import {apiRouter} from './routes/index.js';
 import {dialogRepository} from './repositories/DialogsRepository.js';
+import jwt from 'jsonwebtoken';
 
 
 export const server = Express()
@@ -28,22 +29,34 @@ server.get('/', (req, response) => {
 
 const users = new Map();
 
+
 socketServer.on('connection', (socket) => {
-    users.set(socket.id, socket);
-    console.log('a user connected');
+    const connectionTimer = setTimeout(() => socket.disconnect(), 10000);
+    socket.on('auth', (token) => {
+        try {
+            const tokenData = jwt.verify(token, process.env.JWT_SECRET);
+            users.set(socket.id, socket);
+            console.log('a user connected');
+            clearTimeout(connectionTimer);
 
-    socket.on('disconnect', () => {
-        users.delete(socket.id);
-    });
+            socket.on('disconnect', () => {
+                users.delete(socket.id);
+            });
 
-    socket.on('message', async (message) => {
-        await dialogRepository.create(message);
+            socket.on('message', async (message) => {
+                await dialogRepository.create(message);
 
-        users.forEach((userSocket) => {
-            if (userSocket !== socket) {
-                userSocket.emit('getLastMsg', message);
-            }
-        });
+                users.forEach((userSocket) => {
+                    if (userSocket !== socket) {
+                        userSocket.emit('getLastMsg', message);
+                    }
+                });
+            });
+
+        } catch (err) {
+            socket.disconnect();
+            console.log(err);
+        }
     });
 
 });

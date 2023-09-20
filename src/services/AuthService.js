@@ -4,6 +4,16 @@ import {Password} from '../utils/Password.js';
 import jwt from 'jsonwebtoken';
 
 class AuthService {
+
+    async _generateAccessToken(userId) {
+        return jwt.sign({
+            userId: userId,
+            liveTime: 86400000, // 24 hour
+        }, process.env.JWT_SECRET, {
+            expiresIn: '10s',
+        });
+    }
+
     async signUp(data) {
         const candidate = await UserModel.findOne({
             where: {
@@ -42,12 +52,7 @@ class AuthService {
             if (Password.calculateHash(data.password) !== candidate.passwordHash) {
                 return ERRORS.USERS.INVALID_PASSWORD;
             }
-            return jwt.sign({
-                userId: candidate.id,
-                liveTime: 86400000, // 24 hour
-            }, process.env.JWT_SECRET, {
-                expiresIn: '1d',
-            });
+            return await this._generateAccessToken(candidate.id);
         } catch (error) {
             throw new Error(error.message);
         }

@@ -21,10 +21,12 @@
 <form id="form" action="">
     <input id="input" autocomplete="off" /><button>Send</button>
 </form>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script src="/socket.io/socket.io.js"></script>
 <script type="module" src="./script.js"></script>
 <script type="module">
-    import {viewMessage, loadMessages} from './script.js';
+    import {signIn, clearMessages, viewMessage, loadMessages} from './script.js';
+
 
     const socket = io();
 
@@ -32,11 +34,23 @@
     const message = document.getElementById('input');
 
     const getMessageListRequest = new XMLHttpRequest();
+
     const messagesList = document.getElementById('messages');
 
 
     socket.on('getLastMsg', (message) => {
         viewMessage(message, messagesList);
+    })
+
+    socket.on('disconnect', () => {
+        signIn()
+            .then(({data: accessToken}) => {
+                localStorage.setItem('accessToken', accessToken)
+                socket.emit('auth', accessToken);
+                clearMessages()
+                loadMessages(getMessageListRequest);
+            })
+            .catch(console.error);
     })
 
     form.addEventListener('submit', (event) => {
@@ -49,7 +63,13 @@
     });
 
     window.onload = () => {
-        loadMessages(getMessageListRequest);
+        signIn()
+            .then(({data: accessToken}) => {
+                localStorage.setItem('accessToken', accessToken)
+                socket.emit('auth', accessToken);
+                loadMessages(getMessageListRequest);
+            })
+            .catch(console.error);
     };
 </script>
 </body>

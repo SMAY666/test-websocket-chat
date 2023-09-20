@@ -1,8 +1,9 @@
+
+
 const messagesList = document.getElementById('messages');
 
 
 export function viewMessage(message) {
-    console.log(message);
     const item = document.createElement('li');
     item.textContent = message;
     messagesList.appendChild(item);
@@ -24,6 +25,19 @@ export function loadMessages(getMessageListRequest) {
             });
         }
     };
+}
+
+export function clearMessages() {
+    while (messagesList.lastChild) {
+        messagesList.removeChild(messagesList.lastChild);
+    }
+}
+
+export function signIn() {
+    return axios.post('http://localhost:8001/api/auth/sign-in', {
+        name: 'Matvey',
+        password: '1111',
+    });
 }
 
 
