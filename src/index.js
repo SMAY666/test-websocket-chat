@@ -3,6 +3,7 @@ import {Server} from 'socket.io';
 import {createServer} from 'node:http';
 import {sequelize} from './utils/db.js';
 import {apiRouter} from './routes/index.js';
+import {dialogRepository} from './repositories/DialogsRepository.js';
 
 export const server = Express()
     .use(Express.json())
@@ -20,8 +21,8 @@ server.get('/', (req, response) => {
 
 socketServer.on('connection', (socket) => {
     console.log('a user connected');
-    socket.on('disconnect', (socket) => {
-        console.log('a user disconnected');
+    socket.on('chat message', async (message) => {
+        await dialogRepository.create(message);
     });
 });
 
