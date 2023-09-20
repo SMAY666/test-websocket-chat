@@ -22,21 +22,35 @@
     <input id="input" autocomplete="off" /><button>Send</button>
 </form>
 <script src="/socket.io/socket.io.js"></script>
+<script type="module" src="./script.js"></script>
 <script type="module">
+    import {viewMessage, loadMessages} from './script.js';
+
     const socket = io();
 
     const form = document.getElementById('form');
     const message = document.getElementById('input');
+
+    const getMessageListRequest = new XMLHttpRequest();
     const messagesList = document.getElementById('messages');
+
+
+    socket.on('getLastMsg', (message) => {
+        viewMessage(message, messagesList);
+    })
 
     form.addEventListener('submit', (event) => {
         event.preventDefault();
         if (message.value) {
-            socket.emit('sendMsg', message.value);
+            socket.emit('message', message.value);
+            viewMessage(message.value, messagesList);
             message.value = '';
         }
     });
+
+    window.onload = () => {
+        loadMessages(getMessageListRequest);
+    };
 </script>
-<script type="module" src="./script.js"></script>
 </body>
 </html>

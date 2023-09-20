@@ -26,13 +26,27 @@ server.get('/', (req, response) => {
     response.sendFile(process.cwd() + '/public/index.html');
 });
 
-socketServer.on('connection', (socket) => {
-    console.log('a user connected');
-    socket.on('sendMsg', async (message) => {
-        await dialogRepository.create(message);
-    });
-});
+const users = new Map();
 
+socketServer.on('connection', (socket) => {
+    users.set(socket.id, socket);
+    console.log('a user connected');
+
+    socket.on('disconnect', () => {
+        users.delete(socket.id);
+    });
+
+    socket.on('message', async (message) => {
+        await dialogRepository.create(message);
+
+        users.forEach((userSocket) => {
+            if (userSocket !== socket) {
+                userSocket.emit('getLastMsg', message);
+            }
+        });
+    });
+
+});
 
 httpServer.listen(3000, () => {
     console.log('Socket server started on http://localhost:3000');

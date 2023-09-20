@@ -7,4 +7,7 @@ export const ERRORS = {
         PASSWORD_NOT_CONFIRMED: {status: 403, message: 'Пароли не совпадают'},
         INVALID_PASSWORD: {status: 403, message: 'Неверный пароль'},
     },
+    DIALOGS: {
+        MESSAGES_NOT_FOUND: {status: 404, message: 'Сообщения не найдены'},
+    }
 };

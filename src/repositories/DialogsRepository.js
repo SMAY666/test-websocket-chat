@@ -1,4 +1,5 @@
 import {DialogModel} from '../models/DialogModel.js';
+import {ERRORS} from '../constants/errors.js';
 
 class DialogsRepository {
     async create(message) {
@@ -16,6 +17,9 @@ class DialogsRepository {
             const messages = await DialogModel.findAll({
                 order: [['id', 'ASC']],
             });
+            if (!messages) {
+                return ERRORS.DIALOGS.MESSAGES_NOT_FOUND;
+            }
             return {
                 status: 200,
                 data: messages,
