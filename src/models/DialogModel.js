@@ -1,20 +1,14 @@
-import {DataTypes} from 'sequelize';
 import {sequelize} from '../utils/db.js';
+import {DataTypes} from 'sequelize';
 
-
-export const UserModel = sequelize.define('users', {
+export const DialogModel = sequelize.define('dialogs', {
     id: {
         type: DataTypes.INTEGER.UNSIGNED,
         primaryKey: true,
-        allowNull: false,
         autoIncrement: true,
     },
-    name: {
+    message: {
         type: DataTypes.STRING,
         allowNull: false,
-        unique: 'user_model_name',
-    },
-    passwordHash: {
-        type: DataTypes.STRING,
     },
 });

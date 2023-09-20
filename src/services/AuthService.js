@@ -1,7 +1,7 @@
 import {UserModel} from '../models/UserModel.js';
 import {ERRORS} from '../constants/errors.js';
 import {Password} from '../utils/Password.js';
-import {server} from '../index.js';
+import jwt from 'jsonwebtoken';
 
 class AuthService {
     async signUp(data) {
@@ -12,38 +12,45 @@ class AuthService {
         });
 
         if (candidate) {
-            throw ERRORS.USERS.USER_ALREADY_EXIST;
+            return ERRORS.USERS.USER_ALREADY_EXIST;
         }
 
         if (data.password !== data.confirmPassword) {
-            throw ERRORS.USERS.PASSWORD_NOT_CONFIRMED;
+            return ERRORS.USERS.PASSWORD_NOT_CONFIRMED;
         }
 
-        return await UserModel.create({
-            ...data,
-            passwordHash: Password.calculateHash(data.password),
-        });
+        return {
+            status: 201,
+            message: await UserModel.create({
+                ...data,
+                passwordHash: Password.calculateHash(data.password),
+            }),
+        };
     }
 
     async signIn(data) {
-        const candidate = await UserModel.findOne({
-            where: {
-                name: data.name,
-            },
-        });
-        if (!candidate) {
-            throw ERRORS.USERS.USER_NOT_FOUND;
-        }
+        try {
+            const candidate = await UserModel.findOne({
+                where: {
+                    name: data.name,
+                },
+            });
+            if (!candidate) {
+                return ERRORS.USERS.USER_NOT_FOUND;
+            }
 
-        if (Password.calculateHash(data.password) !== candidate.passwordHash) {
-            throw ERRORS.USERS.INVALID_PASSWORD;
+            if (Password.calculateHash(data.password) !== candidate.passwordHash) {
+                return ERRORS.USERS.INVALID_PASSWORD;
+            }
+            return jwt.sign({
+                userId: candidate.id,
+                liveTime: 86400000, // 24 hour
+            }, process.env.JWT_SECRET, {
+                expiresIn: '1d',
+            });
+        } catch (error) {
+            throw new Error(error.message);
         }
-        return server.jwt.sign({
-            userId: candidate.id,
-            expiresIn: Date.now() + 86400000, // 24 hours
-        }, {
-            expiresIn: process.env.JWT_LIFE_TIME,
-        });
     }
 }
 

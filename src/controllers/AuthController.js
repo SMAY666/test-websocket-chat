@@ -1,18 +1,20 @@
 import {authService} from '../services/AuthService.js';
+import {CustomError} from '../utils/errors.js';
 
 class AuthController {
-    async signUp(req, reply)  {
-        const user = await authService.signUp(req.body);
-        return reply
-            .code(201)
-            .send(user);
+    async signUp(request, response) {
+        const result = await authService.signUp(request.body);
+        return response
+            .status(result.status)
+            .json(result.data);
+
     }
 
-    async signIn(req, reply)  {
-        const token = await authService.signIn(req.body);
-        return reply
-            .code(200)
-            .send(token);
+    async signIn(request, response) {
+        const token = await authService.signIn(request.body);
+        return response
+            .status(200)
+            .json(token);
     }
 }
 

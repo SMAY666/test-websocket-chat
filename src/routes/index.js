@@ -1,6 +1,8 @@
-import {authRoutes} from './authRoutes.js';
+import {authRouter} from './authRoutes.js';
+import {Router} from 'express';
+import {dialogsRouter} from './dialogsRoutes.js';
 
-export const apiRoutes = (instance, opts, done) => {
-    void instance.register(authRoutes, {prefix: '/auth'});
-    done();
-}
+export const apiRouter = Router();
+
+apiRouter.use('/auth', authRouter);
+apiRouter.use('/msg', dialogsRouter);
