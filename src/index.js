@@ -44,8 +44,6 @@ socketServer.on('connection', (socket) => {
             });
 
             socket.on('message', async (message) => {
-                await dialogRepository.create(message);
-
                 users.forEach((userSocket) => {
                     if (userSocket !== socket) {
                         userSocket.emit('getLastMsg', message);

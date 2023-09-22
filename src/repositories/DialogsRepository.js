@@ -1,14 +1,21 @@
 import {DialogModel} from '../models/DialogModel.js';
 import {ERRORS} from '../constants/errors.js';
 
+
 class DialogsRepository {
-    async create(message) {
+    async create(data) {
         try {
-            return await DialogModel.create({
-                message: message,
-            });
+            return {
+                status: 201,
+                data: await DialogModel.create({
+                    message: data.message,
+                }),
+            };
         } catch (err) {
-            console.log(`Что-то пошло не так: ${err}`);
+            return {
+                status: 500,
+                data: console.log,
+            };
         }
     }
 

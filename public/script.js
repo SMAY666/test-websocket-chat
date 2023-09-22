@@ -1,7 +1,10 @@
-
-
 const messagesList = document.getElementById('messages');
 
+export function sendMessage(message) {
+    return axios.post('http://localhost:8001/api/msg/', {
+        message: message,
+    });
+}
 
 export function viewMessage(message) {
     const item = document.createElement('li');

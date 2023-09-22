@@ -3,3 +3,4 @@ import {controller} from '../controllers/DialogsController.js';
 
 export const dialogsRouter = new Router();
 dialogsRouter.get('/', controller.getAll);
+dialogsRouter.post('/', controller.create);

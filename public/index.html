@@ -25,7 +25,7 @@
 <script src="/socket.io/socket.io.js"></script>
 <script type="module" src="./script.js"></script>
 <script type="module">
-    import {signIn, clearMessages, viewMessage, loadMessages} from './script.js';
+    import {signIn, sendMessage, clearMessages, viewMessage, loadMessages} from './script.js';
 
 
     const socket = io();
@@ -56,9 +56,13 @@
     form.addEventListener('submit', (event) => {
         event.preventDefault();
         if (message.value) {
-            socket.emit('message', message.value);
-            viewMessage(message.value, messagesList);
-            message.value = '';
+            sendMessage(message.value)
+                .then(({data}) => {
+                    socket.emit('message', data.message);
+                    viewMessage(data.message, messagesList);
+                    message.value = '';
+                })
+                .catch(console.log)
         }
     });
 
