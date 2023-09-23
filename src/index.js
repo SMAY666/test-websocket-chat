@@ -1,11 +1,11 @@
 import Express from 'express';
 import {Server} from 'socket.io';
 import cors from 'cors';
+import jwt from 'jsonwebtoken';
+
 import {createServer} from 'node:http';
 import {sequelize} from './utils/db.js';
 import {apiRouter} from './routes/index.js';
-import {dialogRepository} from './repositories/DialogsRepository.js';
-import jwt from 'jsonwebtoken';
 
 
 export const server = Express()

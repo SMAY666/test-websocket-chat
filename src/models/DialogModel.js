@@ -11,4 +11,8 @@ export const DialogModel = sequelize.define('dialogs', {
         type: DataTypes.STRING,
         allowNull: false,
     },
+    senderId: {
+        type: DataTypes.INTEGER.UNSIGNED,
+        allowNull: false,
+    },
 });

@@ -11,10 +11,10 @@ class AuthController {
     }
 
     async signIn(request, response) {
-        const token = await authService.signIn(request.body);
+        const result = await authService.signIn(request.body);
         return response
-            .status(200)
-            .json(token);
+            .status(result.status)
+            .json(result.data);
     }
 }
 

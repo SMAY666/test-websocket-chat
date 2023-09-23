@@ -2,24 +2,19 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
     <title>Socket.IO chat</title>
-    <style>
-        body { margin: 0; padding-bottom: 3rem; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
-
-        #form { background: rgba(0, 0, 0, 0.15); padding: 0.25rem; position: fixed; bottom: 0; left: 0; right: 0; display: flex; height: 3rem; box-sizing: border-box; backdrop-filter: blur(10px); }
-        #input { border: none; padding: 0 1rem; flex-grow: 1; border-radius: 2rem; margin: 0.25rem; }
-        #input:focus { outline: none; }
-        #form > button { background: #333; border: none; padding: 0 1rem; margin: 0.25rem; border-radius: 3px; outline: none; color: #fff; }
-
-        #messages { list-style-type: none; margin: 0; padding: 0; }
-        #messages > li { padding: 0.5rem 1rem; }
-        #messages > li:nth-child(odd) { background: #efefef; }
-    </style>
 </head>
 <body>
-<ul id="messages"></ul>
+<form action="" id="authForm">
+    <input class="authInput" id="loginInput">
+    <input class="authInput" id="passwordInput" type="password">
+    <button>Войти</button>
+</form>
+<div id="messages"></div>
 <form id="form" action="">
-    <input id="input" autocomplete="off" /><button>Send</button>
+    <input id="input" autocomplete="off" />
+    <button>Send</button>
 </form>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script src="/socket.io/socket.io.js"></script>
@@ -29,6 +24,9 @@
 
 
     const socket = io();
+    const authForm = document.getElementById('authForm');
+    const loginInput = document.getElementById('loginInput');
+    const passwordInput = document.getElementById('passwordInput');
 
     const form = document.getElementById('form');
     const message = document.getElementById('input');
@@ -43,11 +41,24 @@
     })
 
     socket.on('disconnect', () => {
-        signIn()
-            .then(({data: accessToken}) => {
-                localStorage.setItem('accessToken', accessToken)
-                socket.emit('auth', accessToken);
-                clearMessages()
+        localStorage.setItem('accessToken', null);
+        localStorage.setItem('userId', null);
+        authForm.style.display = 'block';
+        messagesList.style.display = 'none';
+        form.style.display = 'none'
+    });
+
+    authForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+        signIn(loginInput.value, passwordInput.value)
+            .then(({data}) => {
+                localStorage.setItem('accessToken', data.token);
+                localStorage.setItem('userId', data.userId);
+                socket.emit('auth', data.token);
+                clearMessages();
+                authForm.style.display = 'none';
+                messagesList.style.display = 'block';
+                form.style.display = 'flex'
                 loadMessages(getMessageListRequest);
             })
             .catch(console.error);
@@ -65,16 +76,6 @@
                 .catch(console.log)
         }
     });
-
-    window.onload = () => {
-        signIn()
-            .then(({data: accessToken}) => {
-                localStorage.setItem('accessToken', accessToken)
-                socket.emit('auth', accessToken);
-                loadMessages(getMessageListRequest);
-            })
-            .catch(console.error);
-    };
 </script>
 </body>
 </html>

@@ -1,5 +1,6 @@
 import {DialogModel} from '../models/DialogModel.js';
 import {ERRORS} from '../constants/errors.js';
+import {request} from 'express';
 
 
 class DialogsRepository {
@@ -8,7 +9,8 @@ class DialogsRepository {
             return {
                 status: 201,
                 data: await DialogModel.create({
-                    message: data.message,
+                    ...data,
+                    senderId: request.userId,
                 }),
             };
         } catch (err) {

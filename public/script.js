@@ -1,4 +1,5 @@
 const messagesList = document.getElementById('messages');
+const getMessageListRequest = new XMLHttpRequest();
 
 export function sendMessage(message) {
     return axios.post('http://localhost:8001/api/msg/', {
@@ -7,8 +8,11 @@ export function sendMessage(message) {
 }
 
 export function viewMessage(message) {
-    const item = document.createElement('li');
-    item.textContent = message;
+    const item = document.createElement('div');
+    if (message.senderId && message.senderId === +localStorage.getItem('userId') || !message.senderId) {
+        item.style.textAlign = 'right';
+    }
+    item.textContent = message.message ?? message;
     messagesList.appendChild(item);
     window.scrollTo(0, document.body.scrollHeight);
 }
@@ -24,7 +28,7 @@ export function loadMessages(getMessageListRequest) {
             const messages = JSON.parse(getMessageListRequest.response);
 
             messages.map((message) => {
-                viewMessage(message.message);
+                viewMessage(message);
             });
         }
     };
@@ -36,11 +40,22 @@ export function clearMessages() {
     }
 }
 
-export function signIn() {
+export function signIn(login, password) {
     return axios.post('http://localhost:8001/api/auth/sign-in', {
-        name: 'Matvey',
-        password: '1111',
+        name: login,
+        password: password,
     });
 }
+
+window.onload = () => {
+    if (localStorage.getItem('accessToken') === null) {
+        authForm.style.display = 'block';
+        messagesList.style.display = 'none';
+        form.style.display = 'none';
+    } else {
+        clearMessages();
+        loadMessages(getMessageListRequest);
+    }
+};
 
 
