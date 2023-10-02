@@ -1,6 +1,17 @@
 const messagesList = document.getElementById('messages');
-const getMessageListRequest = new XMLHttpRequest();
 
+
+export function setDataIntoStorage(token, userId) {
+    return new Promise((resolve, reject) => {
+        try {
+            localStorage.setItem('accessToken', token);
+            localStorage.setItem('userId', userId);
+            resolve(token);
+        } catch (err) {
+            reject(err);
+        }
+    });
+}
 export function sendMessage(message) {
     return axios.post('http://localhost:8001/api/msg/', {
         message: message,
@@ -40,22 +51,25 @@ export function clearMessages() {
     }
 }
 
-export function signIn(login, password) {
+export async function signIn(login, password) {
     return axios.post('http://localhost:8001/api/auth/sign-in', {
         name: login,
         password: password,
     });
 }
 
-window.onload = () => {
-    if (localStorage.getItem('accessToken') === null) {
-        authForm.style.display = 'block';
-        messagesList.style.display = 'none';
-        form.style.display = 'none';
-    } else {
-        clearMessages();
-        loadMessages(getMessageListRequest);
-    }
-};
-
-
+export async function auth(login, password, socket) {
+    return new Promise((resolve, reject) => {
+        signIn(login, password)
+            .then(({data}) => {
+                return setDataIntoStorage(data.token, data.userId);
+            })
+            .then((token) => {
+                console.log(token);
+                resolve(token);
+            })
+            .catch((err) => {
+                reject(err);
+            });
+    });
+}

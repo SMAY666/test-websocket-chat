@@ -4,6 +4,10 @@ body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 
+header > button {
+    float: right;
+}
+
 #authForm {
     height: 100px;
     width: 200px;

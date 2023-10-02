@@ -6,21 +6,26 @@
     <title>Socket.IO chat</title>
 </head>
 <body>
+<header>
+    <button>Выйти</button>
+</header>
 <form action="" id="authForm">
     <input class="authInput" id="loginInput">
     <input class="authInput" id="passwordInput" type="password">
     <button>Войти</button>
 </form>
-<div id="messages"></div>
-<form id="form" action="">
-    <input id="input" autocomplete="off" />
-    <button>Send</button>
-</form>
+<div>
+    <div id="messages"></div>
+    <form id="form" action="">
+        <input id="input" autocomplete="off"/>
+        <button>Send</button>
+    </form>
+</div>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script src="/socket.io/socket.io.js"></script>
 <script type="module" src="./script.js"></script>
 <script type="module">
-    import {signIn, sendMessage, clearMessages, viewMessage, loadMessages} from './script.js';
+    import {auth, sendMessage, clearMessages, viewMessage, loadMessages} from './script.js';
 
 
     const socket = io();
@@ -38,31 +43,31 @@
 
     socket.on('getLastMsg', (message) => {
         viewMessage(message, messagesList);
-    })
+    });
 
     socket.on('disconnect', () => {
         localStorage.setItem('accessToken', null);
         localStorage.setItem('userId', null);
         authForm.style.display = 'block';
         messagesList.style.display = 'none';
-        form.style.display = 'none'
+        form.style.display = 'none';
     });
+
 
     authForm.addEventListener('submit', (event) => {
         event.preventDefault();
-        signIn(loginInput.value, passwordInput.value)
-            .then(({data}) => {
-                localStorage.setItem('accessToken', data.token);
-                localStorage.setItem('userId', data.userId);
-                socket.emit('auth', data.token);
-                clearMessages();
+        auth(loginInput.value, passwordInput.value, socket)
+            .then((token) => {
                 authForm.style.display = 'none';
                 messagesList.style.display = 'block';
-                form.style.display = 'flex'
+                form.style.display = 'flex';
+                socket.emit('auth', token);
+                console.log('!!!!', token);
+                clearMessages();
                 loadMessages(getMessageListRequest);
             })
-            .catch(console.error);
-    })
+            .catch((err) => console.log(err));
+    });
 
     form.addEventListener('submit', (event) => {
         event.preventDefault();
@@ -73,9 +78,24 @@
                     viewMessage(data.message, messagesList);
                     message.value = '';
                 })
-                .catch(console.log)
+                .catch(console.log);
         }
     });
+
+    function killToken() {
+    }
+
+    window.onload = () => {
+        if (localStorage.getItem('accessToken') === 'null') {
+            authForm.style.display = 'block';
+            messagesList.style.display = 'none';
+            form.style.display = 'none';
+        } else {
+            socket.emit('auth', localStorage.getItem('accessToken'));
+            clearMessages();
+            loadMessages(getMessageListRequest);
+        }
+    };
 </script>
 </body>
 </html>

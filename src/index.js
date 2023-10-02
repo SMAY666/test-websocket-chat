@@ -21,7 +21,10 @@ const httpServer = createServer(server);
 const socketServer = new Server(httpServer);
 
 
-await sequelize.sync({alter: true, force: false});
+await sequelize.sync({
+    alter: true,
+    force: false,
+});
 
 server.get('/', (req, response) => {
     response.sendFile(process.cwd() + '/public/index.html');
@@ -31,13 +34,13 @@ const users = new Map();
 
 
 socketServer.on('connection', (socket) => {
-    const connectionTimer = setTimeout(() => socket.disconnect(), 10000);
+    const connectionTimer = setTimeout(() => socket.disconnect(), 600000);
     socket.on('auth', (token) => {
         try {
-            const tokenData = jwt.verify(token, process.env.JWT_SECRET);
             users.set(socket.id, socket);
             console.log('a user connected');
             clearTimeout(connectionTimer);
+
 
             socket.on('disconnect', () => {
                 users.delete(socket.id);
@@ -56,8 +59,8 @@ socketServer.on('connection', (socket) => {
             console.log(err);
         }
     });
-
 });
+
 
 httpServer.listen(3000, () => {
     console.log('Socket server started on http://localhost:3000');
